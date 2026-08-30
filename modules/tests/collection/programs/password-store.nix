@@ -8,7 +8,7 @@
       programs.password-store = {
         enable = true;
         package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
-        settings = {
+        environment = {
           PASSWORD_STORE_DIR = "/home/bob/.local/share/password-store";
           PASSWORD_STORE_CLIP_TIME = 60;
         };
@@ -31,7 +31,7 @@
       with subtest("Verify if the pass-otp extension is available"):
           machine.succeed("su bob -c 'pass otp --help'")
 
-      with subtest("Verify if the settings are exported"):
+      with subtest("Verify if the environment variables are exported"):
           store = machine.succeed("su bob -c \"fish -c 'echo $PASSWORD_STORE_DIR'\"").strip()
           assert store == "/home/bob/.local/share/password-store", (
               "Unexpected PASSWORD_STORE_DIR: %r" % store

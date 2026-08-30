@@ -31,7 +31,7 @@ in {
       '';
     };
 
-    settings = mkOption {
+    environment = mkOption {
       type = envVarType;
       default = {};
       example = literalExpression ''
@@ -56,6 +56,6 @@ in {
 
   config = mkIf cfg.enable {
     packages = mkIf (cfg.package != null) [cfg.package];
-    environment.sessionVariables = cfg.settings;
+    environment.sessionVariables = cfg.environment;
   };
 }
