@@ -9,8 +9,8 @@
         enable = true;
         package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
         environment = {
-          PASSWORD_STORE_DIR = "/home/bob/.local/share/password-store";
-          PASSWORD_STORE_CLIP_TIME = 60;
+          DIR = "/home/bob/.local/share/password-store";
+          CLIP_TIME = 60;
         };
       };
 
@@ -31,14 +31,12 @@
       with subtest("Verify if the pass-otp extension is available"):
           machine.succeed("su bob -c 'pass otp --help'")
 
-      with subtest("Verify if the environment variables are exported"):
+      with subtest("Verify if the environment variables are exported and prefixed"):
           store = machine.succeed("su bob -c \"fish -c 'echo $PASSWORD_STORE_DIR'\"").strip()
-          assert store == "/home/bob/.local/share/password-store", (
-              "Unexpected PASSWORD_STORE_DIR: %r" % store
-          )
+          assert store == "/home/bob/.local/share/password-store", "PASSWORD_STORE_DIR was not set correctly"
 
           clip = machine.succeed("su bob -c \"fish -c 'echo $PASSWORD_STORE_CLIP_TIME'\"").strip()
-          assert clip == "60", "Unexpected PASSWORD_STORE_CLIP_TIME: %r" % clip
+          assert clip == "60", "PASSWORD_STORE_CLIP_TIME was not set correctly"
 
       with subtest("Verify if pass is able to correctly read our config"):
           # pass needs a key to encrypt the store with.
